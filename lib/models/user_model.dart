@@ -3,43 +3,45 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
-  final String password;
-  final String phoneNumber;
-  final String status;
-  final String role;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final String? password;
+  final String? phoneNumber;
+  final String? status;
+  final String? role;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   User({
     required this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.password,
-    required this.phoneNumber,
-    required this.role,
-    required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    this.password,
+    this.phoneNumber,
+    this.status,
+    this.role,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  //Factory to create user from json
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      firstName: json['firstname'],
-      lastName: json['lastName'],
-      email: json['email'],
+      id: json['id'] ?? 0,
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      email: json['email'] ?? '',
       password: json['password'],
       phoneNumber: json['phoneNumber'],
-      role: json['role'],
       status: json['status'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
+      role: json['role'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.tryParse(json['updatedAt'].toString())
+          : null,
     );
   }
 
-  //Convert User to json
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -47,10 +49,10 @@ class User {
       'lastName': lastName,
       'email': email,
       'phoneNumber': phoneNumber,
-      'role': role,
       'status': status,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'role': role,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 }

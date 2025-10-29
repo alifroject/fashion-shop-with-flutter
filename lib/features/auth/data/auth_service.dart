@@ -34,12 +34,14 @@ class AuthService {
       'password': password,
     });
 
-    final userJson = response.data['user'];
-    final token = response.data['token'];
-    // Save token locally
-    await _storage.saveToken(token);
-
-    return User.fromJson(userJson);
+    print(response.data);
+    final data = response.data;
+    final token = data['token']?.toString();
+    final userData = data['user'] as Map<String, dynamic>?;
+    if (token == null || userData == null) {
+      throw Exception("Invalid response format from server.");
+    } 
+    return User.fromJson(userData);
   }
 
   //Get current user from token

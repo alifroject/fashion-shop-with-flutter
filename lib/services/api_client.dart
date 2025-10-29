@@ -8,7 +8,7 @@ class ApiClient {
   ApiClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: 'http://localhost:3005/',
+          baseUrl: 'http://10.0.2.2:3005',
           headers: {"Content-type": 'application/json'},
         ),
       );
@@ -23,7 +23,7 @@ class ApiClient {
     return _dio.get(path);
   }
 
-//Post request with token 
+  //Post request with token
   Future<Response> post(
     String path,
     Map<String, dynamic> data, {
