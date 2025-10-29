@@ -1,5 +1,4 @@
-
-import 'package:outfit_store/models/user_model.dart';
+import 'package:outfit_store/models/user_model.dart'; //user model for User
 import '../../../../../services/api_client.dart';
 import '../../../../../services/storage_service.dart';
 
@@ -8,9 +7,15 @@ class AuthService {
   final StorageService _storage = StorageService();
 
   //Signup
-  Future<User> signUp(String firstName, String email, String password) async {
+  Future<User> signup(
+    String firstName,
+    String lastName,
+    String email,
+    String password,
+  ) async {
     final response = await _appClient.post('/api/auth/signup', {
       'firstName': firstName,
+      'lastName': lastName,
       'email': email,
       'password': password,
     });
