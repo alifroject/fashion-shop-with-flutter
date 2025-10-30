@@ -20,10 +20,6 @@ class AuthService {
       'password': password,
     });
     final userJson = response.data['user'];
-    final token = response.data['token'];
-
-    //save token locally
-    await _storage.saveToken(token);
     return User.fromJson(userJson);
   }
 
@@ -41,6 +37,7 @@ class AuthService {
     if (token == null || userData == null) {
       throw Exception("Invalid response format from server.");
     } 
+    await _storage.saveToken(token); //get token
     return User.fromJson(userData);
   }
 
