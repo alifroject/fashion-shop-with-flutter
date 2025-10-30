@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'components/login_header.dart';
+import 'components/login_form.dart';
+import 'components/login_button.dart';
+
 import '../../../features/auth/data/auth_service.dart';
 import '../../../routes/router.dart';
 import '../../../routes/screen_export.dart';
@@ -67,84 +71,13 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.lock_outline_rounded,
-                  color: Theme.of(context).primaryColor,
-                  size: screenWidth * 0.18,
+                const LoginHeader(),
+                LoginForm(
+                  emailController: _emailController,
+                  passwordController: _passwordController,
                 ),
-                SizedBox(height: screenHeight * 0.02),
-                Text(
-                  'Welcome Back!',
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: screenWidth * 0.065,
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.01),
-                Text(
-                  'Login to continue to Outfit Store',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
-                ),
+                LoginButton(loading: _loading, onPressed: _login),
                 SizedBox(height: screenHeight * 0.04),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    labelText: 'Email',
-                    filled: true,
-                    fillColor:
-                        Theme.of(context).inputDecorationTheme.fillColor ??
-                        Theme.of(context).colorScheme.surfaceVariant,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    labelText: 'Password',
-                    filled: true,
-                    fillColor:
-                        Theme.of(context).inputDecorationTheme.fillColor ??
-                        Theme.of(context).colorScheme.surfaceVariant,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.04),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _loading ? null : _login,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.02,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 5,
-                    ),
-                    child: _loading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.03),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, AppRoutes.signup);
