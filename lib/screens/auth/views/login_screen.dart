@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../auth//data/auth_service.dart';
-import '../../../routes/app_routes.dart';
+import '../../../features/auth/data/auth_service.dart';
+import '../../../routes/router.dart';
+import '../../../routes/screen_export.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,14 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Welcome ${result.firstName}!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Welcome ${result.firstName}!')));
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
     } finally {
       setState(() => _loading = false);
     }
@@ -36,17 +37,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = Responsive.screenWidth(context);
+    final screenHeight = Responsive.screenHeight(context);
+
     return Scaffold(
-      backgroundColor: Colors.blue.shade50,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.06,
+            vertical: screenHeight * 0.02,
+          ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.07,
+              vertical: screenHeight * 0.04,
+            ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(24),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
                   color: Colors.black12,
                   blurRadius: 15,
@@ -57,40 +67,42 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   Icons.lock_outline_rounded,
-                  color: Colors.blueAccent,
-                  size: 80,
+                  color: Theme.of(context).primaryColor,
+                  size: screenWidth * 0.18,
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: screenHeight * 0.02),
+                Text(
                   'Welcome Back!',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: screenWidth * 0.065,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: screenHeight * 0.01),
+                Text(
                   'Login to continue to Outfit Store',
-                  style: TextStyle(color: Colors.black54, fontSize: 14),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: screenHeight * 0.04),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.email_outlined),
                     labelText: 'Email',
                     filled: true,
-                    fillColor: Colors.blue.shade50,
+                    fillColor:
+                        Theme.of(context).inputDecorationTheme.fillColor ??
+                        Theme.of(context).colorScheme.surfaceVariant,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.02),
                 TextField(
                   controller: _passwordController,
                   obscureText: true,
@@ -98,21 +110,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: const Icon(Icons.lock_outline),
                     labelText: 'Password',
                     filled: true,
-                    fillColor: Colors.blue.shade50,
+                    fillColor:
+                        Theme.of(context).inputDecorationTheme.fillColor ??
+                        Theme.of(context).colorScheme.surfaceVariant,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: screenHeight * 0.04),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _loading ? null : _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.02,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -120,23 +135,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: _loading
                         ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
+                        : Text(
                             'Login',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: screenWidth * 0.045,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.03),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, AppRoutes.signup);
                   },
-                  child: const Text(
+                  child: Text(
                     "Don't have an account? Sign up",
-                    style: TextStyle(color: Colors.blueAccent),
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: screenWidth * 0.04,
+                    ),
                   ),
                 ),
               ],

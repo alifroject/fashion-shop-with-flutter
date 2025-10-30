@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../auth/data/auth_service.dart';
-import '../../../routes/app_routes.dart';
+import '../../../features/auth/data/auth_service.dart';
+import '../../../routes/router.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -28,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signup successful! Please log in.')),
       );
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
