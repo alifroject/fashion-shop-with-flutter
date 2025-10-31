@@ -50,14 +50,6 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             // Welcome text
-            const Text(
-              'Welcome Back!',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-              ),
-            ),
             const SizedBox(height: 10),
             const Text(
               'Discover your next outfit today',

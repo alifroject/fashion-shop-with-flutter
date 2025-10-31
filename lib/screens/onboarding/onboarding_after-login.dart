@@ -19,24 +19,26 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     super.initState();
 
     // Animate the text
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
     );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
     _controller.repeat(reverse: true);
 
     // Navigate to HomeScreen after 3 seconds
     Future.delayed(const Duration(seconds: 3), () async {
+      // Optional: mark onboarding as seen
+      // final storage = StorageService();
+      // await storage.setOnboardingSeen(true);
       if (!mounted) return;
-
-      // Mark onboarding as seen
-      final storage = StorageService();
-      await storage.setOnboardingSeen(true);
-
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const EntryPoint()),
       );
     });
   }
@@ -85,7 +87,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   height: 12,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(
-                        (index + 1) % 2 == 0 ? 0.3 : 1.0),
+                      (index + 1) % 2 == 0 ? 0.3 : 1.0,
+                    ),
                     shape: BoxShape.circle,
                   ),
                 ),

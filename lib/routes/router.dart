@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'screen_export.dart';
 import '../../services/storage_service.dart';
+import './route_constants.dart';
 
 class AppRoutes {
   static const login = '/login';
   static const signup = '/signup';
-  static const home = '/home';
-
+  
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
@@ -14,10 +14,9 @@ class AppRoutes {
       case signup:
         return MaterialPageRoute(builder: (_) => const SignupScreen());
 
-      // Home route shows onboarding first if needed
-      case home:
+      case entryPointScreenRoute:
         return MaterialPageRoute(
-          builder: (_) => const OnboardingBeforeHomeWrapper(),
+          builder: (_) => const OnboardingScreen(),
         );
 
       default:
@@ -29,38 +28,3 @@ class AppRoutes {
   }
 }
 
-// Wrapper for onboarding
-class OnboardingBeforeHomeWrapper extends StatefulWidget {
-  const OnboardingBeforeHomeWrapper({super.key});
-
-  @override
-  State<OnboardingBeforeHomeWrapper> createState() =>
-      _OnboardingBeforeHomeWrapperState();
-}
-
-class _OnboardingBeforeHomeWrapperState
-    extends State<OnboardingBeforeHomeWrapper> {
-  @override
-  void initState() {
-    super.initState();
-    _checkOnboarding();
-  }
-
-  Future<void> _checkOnboarding() async {
-    final storage = StorageService();
-    final hasSeenOnboarding = await storage.getOnboardingSeen() ?? false;
-
-    if (hasSeenOnboarding && mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    }
-    // Else, OnboardingScreen will be shown
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return const OnboardingScreen();
-  }
-}

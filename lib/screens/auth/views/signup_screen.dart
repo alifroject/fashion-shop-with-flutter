@@ -21,7 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _loading = false;
- 
+
   Future<void> _signup() async {
     setState(() => _loading = true);
     try {
@@ -31,14 +31,15 @@ class _SignupScreenState extends State<SignupScreen> {
         _emailController.text.trim(),
         _passwordController.text.trim(),
       );
+      if (!mounted) return; //only in statefullwidget like to fetch api
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Signup successful! Please log in.')),
       );
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Signup failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Signup failed: $e')));
     } finally {
       setState(() => _loading = false);
     }

@@ -3,9 +3,11 @@ import 'components/login_header.dart';
 import 'components/login_form.dart';
 import 'components/login_button.dart';
 
-import '../../../features/auth/data/auth_service.dart';
 import '../../../routes/router.dart';
 import '../../../routes/screen_export.dart';
+
+import '../../../features/auth/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,25 +19,27 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _loading = false;
 
-  Future<void> _login() async {
-    setState(() => _loading = true);
-    try {
-      final result = await AuthService().login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
+  Future<void> _handleLogin() async {
+    final authProvider = context.read<AuthProvider>();
+
+    await authProvider.login(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
+
+    if (!mounted) return;
+
+    if (authProvider.user != null) {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/entry_point',
+        (Route<dynamic> route) => false,
       );
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Welcome ${result.firstName}!')));
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Login failed: $e')));
-    } finally {
-      setState(() => _loading = false);
+    } else if (authProvider.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: ${authProvider.error}')),
+      );
     }
   }
 
@@ -76,7 +80,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   emailController: _emailController,
                   passwordController: _passwordController,
                 ),
-                LoginButton(loading: _loading, onPressed: _login),
+                LoginButton(
+                  loading: context.watch<AuthProvider>().isLoading,
+                  onPressed: _handleLogin, 
+                ),
+
                 SizedBox(height: screenHeight * 0.04),
                 TextButton(
                   onPressed: () {
