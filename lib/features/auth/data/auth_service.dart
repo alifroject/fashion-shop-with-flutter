@@ -19,7 +19,8 @@ class AuthService {
       'email': email,
       'password': password,
     });
-    final userJson = response.data['user'];
+    print('Signup Response: ${response.data}'); 
+    final userJson = response.data;
     return User.fromJson(userJson);
   }
 
@@ -32,8 +33,8 @@ class AuthService {
 
     print(response.data);
     final data = response.data;
-    final token = data['token']?.toString();
-    final userData = data['user'] as Map<String, dynamic>?;
+    final token = data?.toString();
+    final userData = data as Map<String, dynamic>?;
     if (token == null || userData == null) {
       throw Exception("Invalid response format from server.");
     } 
@@ -47,7 +48,7 @@ class AuthService {
     if (token == null) return null;
 
     final response = await _appClient.get('/api/auth/profile');
-    return User.fromJson(response.data['user']);
+    return User.fromJson(response.data);
   }
 
   //Logout
