@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'storage_service.dart';
 
+// Hadnling http requests and headers
+
 class ApiClient {
   final Dio _dio;
   final StorageService _storage = StorageService();
@@ -8,7 +10,9 @@ class ApiClient {
   ApiClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: 'http://10.0.2.2:3005',
+          baseUrl: 'http://10.0.2.2:8080', // go gin
+          //baseUrl: 'http://10.0.2.2:3005', // express js or nest js
+          //baseUrl: 'http://****** */:3005', //connect to android
           headers: {"Content-type": 'application/json'},
         ),
       );
@@ -36,5 +40,9 @@ class ApiClient {
       }
     }
     return _dio.post(path, data: data);
+  }
+
+  void clearAuthHeader() {
+    _dio.options.headers.remove('Authorization');
   }
 }
