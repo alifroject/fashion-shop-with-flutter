@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
-import '../services/storage_service.dart';
-import 'router.dart';
-import './route_constants.dart';
+import 'package:provider/provider.dart';
+import '../features/auth/provider/auth_provider.dart';
+import './router.dart';
 
-Future<void> checkAuthAndNavigate(State state, String route) async {
-  final storage = StorageService();
-  final token = await storage.getToken();
+class AuthGuard extends StatefulWidget {
+  final Widget child;
 
-  if (!state.mounted) return; // make sure the widget is still in the tree
+  const AuthGuard({super.key, required this.child});
 
-  if (token == null && route == entryPointScreenRoute) {
-    Navigator.pushReplacementNamed(state.context, AppRoutes.login);
-  } else {
-    Navigator.pushReplacementNamed(state.context, route);
+  @override
+  State<AuthGuard> createState() => _AuthGuardState();
+}
+
+class _AuthGuardState extends State<AuthGuard> {
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
+    if (auth.user == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, AppRoutes.login);
+        }
+      });
+      return const SizedBox.shrink();
+    }
+    return widget.child;
   }
 }
