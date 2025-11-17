@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../features/auth/provider/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../features/auth/riverpod/auth_provider.dart';
 import './router.dart';
 
-class AuthGuard extends StatefulWidget {
+class AuthGuard extends ConsumerStatefulWidget  {
   final Widget child;
 
   const AuthGuard({super.key, required this.child});
 
   @override
-  State<AuthGuard> createState() => _AuthGuardState();
+  ConsumerState<AuthGuard> createState() => _AuthGuardState();
 }
 
-class _AuthGuardState extends State<AuthGuard> {
+class _AuthGuardState extends ConsumerState<AuthGuard> {
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    final auth =  ref.watch(authProvider);
 
     if (auth.user == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
