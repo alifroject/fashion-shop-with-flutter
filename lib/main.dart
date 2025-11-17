@@ -1,15 +1,23 @@
-// ---------------------- FULL APP SETUP ----------------------
+// // ---------------------- FULL APP SETUP ----------------------
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/provider/auth_provider.dart'; // widget is dealing with provider while providing is communicating with service
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'features/auth/provider/navigation_provider.dart';
 import 'routes/router.dart';
 import 'core/theme.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthProvider())],
-      child: const MyApp(),
+    ProviderScope(
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
+          // ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ],
+
+        child: const MyApp(),
+      ),
     ),
   );
 }
@@ -35,13 +43,15 @@ class MyApp extends StatelessWidget {
 
 // import 'package:flutter/material.dart';
 // import './routes/screen_export.dart';
+// import './learn_widget.dart';
+// import './createWidget.dart';
 
 // void main() {
 //   runApp(
 //     const MaterialApp(
 //       debugShowCheckedModeBanner: false,
-//       home: LoginScreen(), // Change to test another page manually
+//       // home: LoginScreen(), // Change to test another page manually
+//       home: CreateWidget(), // Change to test another page manually
 //     ),
 //   );
 // }
-
