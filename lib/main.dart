@@ -9,15 +9,16 @@ import 'core/theme.dart';
 
 void main() {
   runApp(
-    ProviderScope(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => AuthProvider()),
-          // ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ],
+    ProviderScope( // =====================> Using riverpod package
+      child: const MyApp(),
+      // child: MultiProvider(
+      //   providers: [
+      //     ChangeNotifierProvider(create: (_) => AuthProvider()),
+      //     // ChangeNotifierProvider(create: (_) => NavigationProvider()),
+      //   ],
 
-        child: const MyApp(),
-      ),
+      //   child: const MyApp(),
+      // ),================================> Using provider package
     ),
   );
 }
