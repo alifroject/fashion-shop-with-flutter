@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../routes/screen_export.dart';
-import 'package:provider/provider.dart';
+import '../../features/navigation/navigation_provider.dart';
 
-class EntryPoint extends StatefulWidget {
+class EntryPoint extends ConsumerStatefulWidget {
   final int initialTab;
   const EntryPoint({super.key, this.initialTab = 0});
 
   @override
-  State<EntryPoint> createState() => _EntryPointState();
+  ConsumerState<EntryPoint> createState() => _EntryPointState();
 }
 
-class _EntryPointState extends State<EntryPoint> {
-  late NavigationProvider navProvider;
-
+class _EntryPointState extends ConsumerState<EntryPoint> {
   @override
   void initState() {
     super.initState();
 
-    navProvider = Provider.of<NavigationProvider>(context, listen: false);
-    navProvider.init(widget.initialTab);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(navigationProvider.notifier).init(widget.initialTab);
+    });
   }
 
   @override
@@ -27,7 +27,7 @@ class _EntryPointState extends State<EntryPoint> {
     final screenWidth = Responsive.screenWidth(context);
     final responsiveFont = screenWidth * 0.055;
 
-    navProvider = Provider.of<NavigationProvider>(context);
+    final navState = ref.watch(navigationProvider);
 
     final List<Widget> pages = [
       HomeScreen(),
@@ -67,7 +67,9 @@ class _EntryPointState extends State<EntryPoint> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
-          final shouldExit = navProvider.onBackPressed();
+          final shouldExit = ref
+              .read(navigationProvider.notifier)
+              .onBackPressed();
           if (shouldExit) {
             Navigator.of(context).maybePop();
           }
@@ -77,11 +79,13 @@ class _EntryPointState extends State<EntryPoint> {
         backgroundColor: theme.scaffoldBackgroundColor,
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: pages[navProvider.currentIndex],
+          child: pages[navState.currentIndex],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: navProvider.currentIndex,
-          onTap: (index) => navProvider.setCurrentIndex(index),
+          currentIndex: navState.currentIndex,
+          onTap: (index) => ref
+              .read(navigationProvider.notifier)
+              .setCurrentIndex(index), //set curent index here
           type: BottomNavigationBarType.fixed,
           selectedItemColor: theme.colorScheme.primary,
           unselectedItemColor: Colors.grey,
