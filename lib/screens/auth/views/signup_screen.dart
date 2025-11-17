@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:outfit_store/screens/auth/views/components/signup_button.dart';
-import '../../../features/auth/data/auth_service.dart';
 import '../../../routes/router.dart';
 import '../../../routes/screen_export.dart';
 
@@ -8,14 +8,17 @@ import '../../../routes/screen_export.dart';
 import '../views/components/signup_header.dart';
 import '../views/components/signup_form.dart';
 
-class SignupScreen extends StatefulWidget {
+//provider
+import '../../../features/auth/riverpod/auth_provider.dart';
+
+class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -23,26 +26,28 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _loading = false;
 
   Future<void> _signup() async {
-    setState(() => _loading = true);
-    try {
-      await AuthService().signup(
-        _firstNameController.text.trim(),
-        _lastNameController.text.trim(),
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
-      if (!mounted) return; //only in statefullwidget like to fetch api
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signup successful! Please log in.')),
-      );
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
-    } catch (e) {
+    await ref
+        .read(authProvider.notifier)
+        .signup(
+          _firstNameController.text.trim(),
+          _lastNameController.text.trim(),
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+    if (!mounted) return;
+
+    final auth = ref.read(authProvider);
+
+    if (auth.error != null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Signup failed: $e')));
-    } finally {
-      setState(() => _loading = false);
+      ).showSnackBar(SnackBar(content: Text(auth.error!)));
+      return;
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Signup successful! Please log in.')),
+    );
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
   }
 
   @override
